@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Deutsch Mit Dir — German Learning</title>
+<style>
+:root{--bg:#f5f7fb;--card:#fff;--text:#18202a;--muted:#667085;--accent:#315efb;--border:#e6e9ef;--good:#16834b}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,Segoe UI,sans-serif;background:var(--bg);color:var(--text)}
+header{background:#fff;border-bottom:1px solid var(--border);padding:16px 20px;position:sticky;top:0;z-index:5}
+.header{max-width:1050px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{font-weight:800;font-size:20px}.switch{display:flex;gap:6px;background:#f0f2f6;padding:4px;border-radius:12px}
+.switch button{border:0;background:transparent;padding:7px 10px;border-radius:9px;cursor:pointer}.switch .on{background:#fff;box-shadow:0 1px 4px #0001;font-weight:700}
+main{max-width:1050px;margin:24px auto;padding:0 18px}.hero{background:linear-gradient(135deg,#172554,#315efb);color:#fff;border-radius:22px;padding:28px;margin-bottom:18px}
+.hero h1{margin:0 0 8px;font-size:32px}.hero p{margin:0;opacity:.9}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:18px}.card h3{margin:0 0 8px}.muted{color:var(--muted)}
+.progress{height:9px;background:#e8ebf2;border-radius:99px;overflow:hidden}.progress>i{display:block;height:100%;background:var(--accent);width:18%}
+.actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}.btn{border:0;border-radius:11px;padding:11px 15px;cursor:pointer;font-weight:700}.primary{background:var(--accent);color:#fff}.secondary{background:#eef2ff;color:#2546b8}
+.lesson{margin-top:18px}.pill{display:inline-block;background:#eef2ff;color:#2546b8;padding:5px 9px;border-radius:99px;font-size:12px;font-weight:700}
+.word{font-size:36px;font-weight:800;margin:12px 0 4px}.meaning{font-size:20px}.example{background:#f8fafc;border-radius:13px;padding:14px;margin-top:14px}
+.option{width:100%;text-align:left;background:#fff;border:1px solid var(--border);padding:12px;border-radius:11px;margin:7px 0;cursor:pointer}.option:hover{border-color:var(--accent)}
+.notice{margin-top:12px;color:var(--good);font-weight:700}.hidden{display:none}
+footer{max-width:1050px;margin:30px auto;padding:0 18px 30px;color:var(--muted);font-size:13px}
+</style>
+</head>
+<body>
+<header><div class="header">
+<div class="brand">🇩🇪 Deutsch Mit Dir</div>
+<div class="switch" id="langs"></div>
+</div></header>
+
+<main>
+<section class="hero">
+<span class="pill">A1 • Lesson 1</span>
+<h1 id="title"></h1><p id="subtitle"></p>
+<div class="actions"><button class="btn primary" onclick="startLesson()">Start A1 lesson</button><button class="btn secondary" onclick="showRealGerman()">Real German</button></div>
+</section>
+
+<section class="grid">
+<div class="card"><h3>📚 Vocabulary</h3><p class="muted">Core words with meaning, examples and pronunciation.</p></div>
+<div class="card"><h3>🧩 Grammar</h3><p class="muted">Simple explanations with Telugu, English or German support.</p></div>
+<div class="card"><h3>💬 Real German</h3><p class="muted">Textbook German vs everyday speech and informal usage.</p></div>
+<div class="card"><h3>📈 Progress</h3><p class="muted">A1 progress</p><div class="progress"><i></i></div></div>
+</section>
+
+<section id="lesson" class="card lesson hidden"></section>
+<section id="real" class="card lesson hidden"></section>
+</main>
+<footer>A1-first prototype • Support language can be changed at any time. German remains the learning target.</footer>
+
+<script>
+const data={
+en:{name:"English",title:"Learn German your way",subtitle:"Switch your support language whenever you want. German is the target; Telugu and English are support languages."},
+te:{name:"తెలుగు",title:"మీకు నచ్చిన విధంగా జర్మన్ నేర్చుకోండి",subtitle:"ఎప్పుడైనా తెలుగు, English, German మధ్య మార్చుకోవచ్చు. German మీ learning target."},
+de:{name:"Deutsch",title:"Deutsch auf deine Art lernen",subtitle:"Wechsle jederzeit die Unterstützungssprache. Deutsch bleibt dein Lernziel."}
+};
+let lang="en";
+const lesson={
+hello:{de:"Hallo",en:"Hello",te:"హలో"},
+morning:{de:"Guten Morgen",en:"Good morning",te:"శుభోదయం"},
+thanks:{de:"Danke",en:"Thank you",te:"ధన్యవాదాలు"}
+};
+function render(){
+document.getElementById("langs").innerHTML=Object.entries(data).map(([k,v])=>`<button class="${k===lang?'on':''}" onclick="setLang('${k}')">${v.name}</button>`).join("");
+document.getElementById("title").textContent=data[lang].title;
+document.getElementById("subtitle").textContent=data[lang].subtitle;
+}
+function setLang(k){lang=k;render(); if(!document.getElementById("lesson").classList.contains("hidden")) startLesson(); if(!document.getElementById("real").classList.contains("hidden")) showRealGerman();}
+function startLesson(){
+document.getElementById("real").classList.add("hidden");
+const l=lesson.morning;
+const heading={en:"Your first German phrase",te:"మీ మొదటి German phrase",de:"Dein erster deutscher Satz"}[lang];
+const support=l[lang];
+document.getElementById("lesson").classList.remove("hidden");
+document.getElementById("lesson").innerHTML=`<span class="pill">A1 • Vocabulary</span><h2>${heading}</h2><div class="word">${l.de}</div><div class="meaning">${support}</div><div class="example"><b>${lang==="te"?"ఉదాహరణ":lang==="de"?"Beispiel":"Example"}</b><br><br>${l.de}!<br><span class="muted">${lang==="te"?"శుభోదయం!":lang==="de"?"Eine einfache Begrüßung am Morgen.":"A common greeting in the morning."}</span></div><div class="actions"><button class="btn secondary" onclick="speak()">🔊 ${lang==="te"?"వినండి":lang==="de"?"Anhören":"Listen"}</button><button class="btn primary" onclick="quiz()">Practice</button></div>`;
+}
+function speak(){speechSynthesis.speak(new SpeechSynthesisUtterance("Guten Morgen"))}
+function quiz(){
+const box=document.getElementById("lesson");
+box.innerHTML=`<span class="pill">A1 • Practice</span><h2>${lang==="te"?"సరైన జర్మన్ పదాన్ని ఎంచుకోండి":lang==="de"?"Wähle die richtige deutsche Antwort":"Choose the correct German phrase"}</h2><p>${lang==="te"?"“శుభోదయం”కి Germanలో ఏది?":lang==="de"?"Was bedeutet „शుభోదయం“ auf Deutsch?":"Which German phrase means “Good morning”?"}</p><button class="option" onclick="answer(false)">Danke</button><button class="option" onclick="answer(true)">Guten Morgen</button><button class="option" onclick="answer(false)">Hallo</button><div id="result"></div>`;
+}
+function answer(ok){document.getElementById("result").innerHTML=`<div class="notice">${ok?(lang==="te"?"సరైన సమాధానం!":lang==="de"?"Richtig!":"Correct! ✓"):(lang==="te"?"మళ్లీ ప్రయత్నించండి.":lang==="de"?"Versuch es noch einmal.":"Try again.")}</div>`}
+function showRealGerman(){
+document.getElementById("lesson").classList.add("hidden");const r=document.getElementById("real");r.classList.remove("hidden");
+r.innerHTML=`<span class="pill">Real German</span><h2>${lang==="te"?"ప్రజలు నిజంగా ఎలా మాట్లాడతారు":lang==="de"?"So sprechen Menschen wirklich":"How people actually speak"}</h2><div class="example"><b>Standard:</b> Wie geht es dir?<br><b>Everyday:</b> Wie geht's dir?<br><b>Casual:</b> Wie geht's?<br><br><span class="muted">${lang==="te"?"సందర్భాన్ని బట్టి ఏ రూపం ఉపయోగించాలో కూడా app నేర్పుతుంది.":lang==="de"?"Die App zeigt auch, wann welche Form passt.":"The app also teaches when each form is appropriate."}</span></div>`;
+}
+render();
+</script>
+</body></html>
